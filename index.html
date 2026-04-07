@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ticketón Executive Dashboard - Full KPI Preview</title>
+    <style>
+        :root {
+            /* Ticketón Blue & White Branding */
+            --bg: #f4f7fb;
+            --surface: #ffffff;
+            --primary: #0050b3;
+            /* Ticketón Corporate Blue */
+            --primary-fade: rgba(0, 80, 179, 0.1);
+            --primary-hover: #003a8c;
+
+            --text: #0f172a;
+            --text-sec: #475569;
+            --text-tert: #94a3b8;
+
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            --warning: #f59e0b;
+            --warning-bg: #fef3c7;
+            --danger: #ef4444;
+            --danger-bg: #fee2e2;
+
+            --radius: 12px;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 40px;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            background: var(--primary);
+            padding: 24px 32px;
+            border-radius: var(--radius);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header h1 {
+            margin: 0 0 4px 0;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: white;
+        }
+
+        .header p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 40px 0 20px 0;
+            display: inline-block;
+            position: relative;
+            color: var(--text);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .grid-kpi {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .grid-sections {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .card.highlight {
+            border-top: 4px solid var(--primary);
+        }
+
+        .card-header {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-sec);
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .val {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        .trend-up {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--success);
+            background: var(--success-bg);
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            width: fit-content;
+        }
+
+        .trend-down {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--danger);
+            background: var(--danger-bg);
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            width: fit-content;
+        }
+
+        .trend-neutral {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-sec);
+            background: var(--border);
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            width: fit-content;
+        }
+
+        .flex-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .flex-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .row-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-sec);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .row-val {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .table-container {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .table th {
+            color: var(--text-sec);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: #f1f5f9;
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-warning {
+            background: var(--warning-bg);
+            color: var(--warning);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .progress-bg {
+            background: var(--border);
+            height: 8px;
+            border-radius: 4px;
+            width: 100px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-fill {
+            background: var(--primary);
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .progress-fill.green {
+            background: var(--success);
+        }
+
+        .metric-group {
+            margin-bottom: 24px;
+        }
+
+        .metric-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .mini-chart-bar {
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            overflow: hidden;
+            margin-top: 8px;
+            background: var(--border);
+        }
+
+        .mini-chart-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="header-logo">
+            <svg width="200" height="40" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" y="2" rx="6" fill="white" fill-opacity="0.2" />
+                <path d="M12 16H24M18 16V28" stroke="white" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <text x="46" y="28" fill="white" font-size="28" font-family="-apple-system, sans-serif"
+                    font-weight="900" font-style="italic" letter-spacing="-1">Ticketón</text>
+            </svg>
+            <div style="margin-left: 12px; padding-left: 20px; border-left: 1px solid rgba(255,255,255,0.3);">
+                <h1>Executive Dashboard</h1>
+                <p>Live production overview · Secure Access</p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <span class="trend-up" style="background: rgba(255,255,255,0.2); color: white;">Live Reporting Active</span>
+            <p style="margin-top: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.8);">Last updated:
+                Just now</p>
+        </div>
+    </div>
+
+    <!-- SECTION 1: Sales & Core Metrics -->
+    <h2 class="section-title" style="margin-top: 0;">Sales & Core Metrics</h2>
+    <div class="grid-kpi">
+        <div class="card highlight">
+            <span class="label">Gross System Sales</span>
+            <h2 class="val">$12,450,000</h2>
+            <span class="trend-up">↑ 12.5% vs Prev Month</span>
+        </div>
+        <div class="card">
+            <span class="label">Net Platform Revenue</span>
+            <h2 class="val">$1,867,500</h2>
+            <span class="trend-up">↑ 15.2% vs Prev Month</span>
+        </div>
+        <div class="card">
+            <span class="label">Tickets Issued</span>
+            <h2 class="val">245,000</h2>
+            <span class="trend-up">↑ 8.4% vs Prev Month</span>
+        </div>
+        <div class="card">
+            <span class="label">Total Orders</span>
+            <h2 class="val">98,540</h2>
+            <span class="trend-up">↑ 6.1% vs Prev Month</span>
+        </div>
+        <div class="card">
+            <span class="label">Average Order Value</span>
+            <h2 class="val">$85.40</h2>
+            <span class="trend-down">↓ 1.2% vs Prev Month</span>
+        </div>
+        <div class="card highlight" style="border-top-color: var(--success);">
+            <span class="label">Goal Attainment (Q3)</span>
+            <h2 class="val">104.5%</h2>
+            <span class="trend-up">Target Exceeded</span>
+        </div>
+    </div>
+
+    <!-- SECTION 2: Traffic, Audience & Behavior -->
+    <h2 class="section-title">Traffic, Audience & Behavior</h2>
+    <div class="grid-3">
+
+        <!-- Traffic Information -->
+        <div class="card">
+            <div class="card-header">Marketing & Traffic <span
+                    style="font-size: 13px; font-weight: 500; color: var(--primary);">Last 30 Days</span></div>
+
+            <div class="metric-group">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
+                    <div>
+                        <span class="label" style="margin:0;">Total Site Visitors</span>
+                        <div class="val" style="font-size: 24px;">1.42M</div>
+                    </div>
+                    <span class="trend-up">↑ 18%</span>
+                </div>
+
+                <div class="flex-row">
+                    <span class="row-label">Global Conversion Rate</span>
+                    <span class="row-val" style="color: var(--success);">4.8% <span
+                            style="font-size: 12px; margin-left:4px; font-weight: 600;">↑ 0.2%</span></span>
+                </div>
+                <div class="flex-row">
+                    <span class="row-label">Average Session Rate</span>
+                    <span class="row-val">3m 14s</span>
+                </div>
+                <div class="flex-row">
+                    <span class="row-label">Bounce Rate</span>
+                    <span class="row-val" style="color: var(--success);">42.1% <span
+                            style="font-size: 12px; margin-left:4px; font-weight: 600;">↓ -5%</span></span>
+                </div>
+            </div>
+
+            <div>
+                <span class="label">Acquisition Channels</span>
+                <div class="mini-chart-bar">
+                    <div class="mini-chart-segment" style="width: 45%; background: var(--primary);"
+                        title="Social (45%)">Social</div>
+                    <div class="mini-chart-segment" style="width: 30%; background: #0ea5e9;" title="Organic (30%)">SEO
+                    </div>
+                    <div class="mini-chart-segment" style="width: 15%; background: #10b981;" title="Direct (15%)">Dir
+                    </div>
+                    <div class="mini-chart-segment" style="width: 10%; background: #8b5cf6;" title="Referral (10%)">Ref
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consumer Demographics -->
+        <div class="card">
+            <div class="card-header">Consumer Demographics <span
+                    style="font-size: 13px; font-weight: 500; color: var(--primary);">Ticket Buyers</span></div>
+
+            <div class="flex-row" style="padding-top: 0;">
+                <span class="row-label">Device Split</span>
+                <span class="row-val">📱 78% <span style="color: var(--border);">|</span> 💻 22%</span>
+            </div>
+
+            <div style="margin-top: 16px;">
+                <span class="label">Age Distribution</span>
+                <div class="flex-row"><span class="row-label">18 - 24</span><span class="row-val">28%</span></div>
+                <div class="flex-row"><span class="row-label">25 - 34 (Primary Core)</span><span class="row-val"
+                        style="color: var(--primary);">42%</span></div>
+                <div class="flex-row"><span class="row-label">35 - 44</span><span class="row-val">20%</span></div>
+                <div class="flex-row"><span class="row-label">45+</span><span class="row-val">10%</span></div>
+            </div>
+
+            <div style="margin-top: 16px;">
+                <span class="label">Gender Split</span>
+                <div class="mini-chart-bar" style="border-radius: 999px;">
+                    <div class="mini-chart-segment" style="width: 55%; background: #ec4899;">Female 55%</div>
+                    <div class="mini-chart-segment" style="width: 45%; background: var(--primary);">Male 45%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Type Performance -->
+        <div class="card">
+            <div class="card-header">Event Type Intelligence <span
+                    style="font-size: 13px; font-weight: 500; color: var(--primary);">Global Rollup</span></div>
+
+            <div class="metric-group">
+                <span class="label">Revenue Contribution</span>
+                <div class="flex-row" style="padding-top: 4px;">
+                    <span class="row-label">🎵 Concerts (Regional Mexican, Latin)</span>
+                    <span class="row-val" style="font-size: 18px;">65%</span>
+                </div>
+                <div class="flex-row">
+                    <span class="row-label">🎪 Festivals (EDM, Mixed)</span>
+                    <span class="row-val">20%</span>
+                </div>
+                <div class="flex-row">
+                    <span class="row-label">⚽️ Sports (Boxing, Soccer, Lucha Libre)</span>
+                    <span class="row-val">10%</span>
+                </div>
+                <div class="flex-row">
+                    <span class="row-label">🎭 Comedy / Theater</span>
+                    <span class="row-val">5%</span>
+                </div>
+            </div>
+
+            <div class="metric-group"
+                style="background: var(--primary-fade); padding: 16px; border-radius: 8px; border: 1px dashed rgba(0, 80, 179, 0.3);">
+                <span class="label" style="color: var(--primary);">Fastest Growing Category</span>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; font-size: 16px; color: var(--text);">Comedy Tours</span>
+                    <span class="trend-up">+34% YoY Growth</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3: Operations, Finance & Risk -->
+    <h2 class="section-title">Operations, Finance & Risk</h2>
+    <div class="grid-sections">
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="card" style="padding: 20px;">
+                    <span class="label">Merchant Fees Collected</span>
+                    <h2 class="val" style="font-size: 24px;">$425,000</h2>
+                    <span class="trend-up" style="font-size: 12px;">↑ 8.1% YTD</span>
+                </div>
+                <div class="card" style="padding: 20px;">
+                    <span class="label">Insurance/Protection Rev</span>
+                    <h2 class="val" style="font-size: 24px;">$215,400</h2>
+                    <span class="trend-up" style="font-size: 12px;">↑ 22.4% YTD</span>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div style="padding: 18px 20px; border-bottom: 1px solid var(--border); background: white;">
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 800;">Top Live Events by Sales</h3>
+                </div>
+                <table class="table">
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Category</th>
+                        <th>Tickets</th>
+                        <th>Gross Sales</th>
+                        <th>Attainment</th>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Reggaeton Fest '26</td>
+                        <td>Festival</td>
+                        <td>48,500</td>
+                        <td style="font-weight: 800; color: var(--primary);">$4,250,000</td>
+                        <td>
+                            <div class="progress-bg">
+                                <div class="progress-fill green" style="width: 98%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Peso Pluma Stadium Tour</td>
+                        <td>Concert</td>
+                        <td>65,000</td>
+                        <td style="font-weight: 800; color: var(--primary);">$3,850,000</td>
+                        <td>
+                            <div class="progress-bg">
+                                <div class="progress-fill green" style="width: 100%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Lucha Libre AAA World</td>
+                        <td>Sports</td>
+                        <td>21,000</td>
+                        <td style="font-weight: 800;">$2,100,000</td>
+                        <td>
+                            <div class="progress-bg">
+                                <div class="progress-fill" style="width: 82%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Banda MS Tour</td>
+                        <td>Concert</td>
+                        <td>35,000</td>
+                        <td style="font-weight: 800;">$1,450,000</td>
+                        <td>
+                            <div class="progress-bg">
+                                <div class="progress-fill green" style="width: 100%;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <div style="padding: 18px 20px; border-bottom: 1px solid var(--border); background: #f1f5f9;">
+                    <h3
+                        style="margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-sec); font-weight: 800;">
+                        Risk & System KPIs</h3>
+                </div>
+                <div style="padding: 12px 20px;">
+                    <div class="flex-row">
+                        <span class="row-label">System Uptime</span>
+                        <span class="row-val" style="color: var(--success);">99.99%</span>
+                    </div>
+                    <div class="flex-row">
+                        <span class="row-label">Refund Rate</span>
+                        <span class="row-val">1.2% <span
+                                style="font-size: 12px; margin-left:4px; color: var(--success);">↓ 0.1%</span></span>
+                    </div>
+                    <div class="flex-row">
+                        <span class="row-label">Chargeback Rate</span>
+                        <span class="row-val" style="color: var(--danger);">0.15% <span
+                                style="font-size: 12px; margin-left:4px;">↑ 0.05%</span></span>
+                    </div>
+                    <div class="flex-row">
+                        <span class="row-label">Failed Transact. Rate</span>
+                        <span class="row-val">0.4%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="background: var(--text); color: white;">
+                <span class="label" style="color: #94a3b8;">Treasury & Liquidity</span>
+                <div style="margin-bottom: 20px;">
+                    <span style="font-size: 14px; color: #cbd5e1; display: block; margin-bottom: 4px;">Cash Collected
+                        (Settled)</span>
+                    <h3 style="margin: 0; font-size: 28px; font-weight: 800;">$15,800,000</h3>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <span style="font-size: 14px; color: #cbd5e1; display: block; margin-bottom: 4px;">Pending
+                        Settlement (Partners)</span>
+                    <h3 style="margin: 0; font-size: 28px; color: #38bdf8; font-weight: 800;">$4,250,000</h3>
+                </div>
+                <div>
+                    <span style="font-size: 14px; color: #cbd5e1; display: block; margin-bottom: 4px;">Accounts
+                        Receivable</span>
+                    <h3 style="margin: 0; font-size: 28px; color: var(--danger); font-weight: 800;">$850,000</h3>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECTION 4: Event Operations & Insights -->
+    <h2 class="section-title">Event Operations & Insights</h2>
+    <div class="grid-kpi">
+        <div class="card">
+            <span class="label">Total Events (YTD)</span>
+            <h2 class="val">4,250</h2>
+            <span class="trend-up">↑ 12% vs LY</span>
+        </div>
+        <div class="card highlight">
+            <span class="label">Active/Current Events</span>
+            <h2 class="val">845</h2>
+            <span class="trend-neutral">Live on platform</span>
+        </div>
+        <div class="card" style="border-top: 4px solid var(--success);">
+            <span class="label">Events This Weekend</span>
+            <h2 class="val">112</h2>
+            <span class="trend-up">High Volume Expected</span>
+        </div>
+        <div class="card">
+            <span class="label">Past Events (YTD)</span>
+            <h2 class="val">3,405</h2>
+            <span class="trend-neutral">Completed</span>
+        </div>
+    </div>
+
+    <div class="grid-sections">
+        <div class="table-container">
+            <div style="padding: 18px 20px; border-bottom: 1px solid var(--border); background: white;">
+                <h3 style="margin: 0; font-size: 16px; font-weight: 800;">Target Markets & Top Locations <span
+                        style="font-size: 13px; font-weight: 500; color: var(--primary); float: right;">Active Events by
+                        City</span></h3>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>City</th>
+                    <th>Active Events</th>
+                    <th>Avg Capacity</th>
+                    <th>Sales to Date</th>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600;">Los Angeles, CA</td>
+                    <td>145</td>
+                    <td>2,500</td>
+                    <td style="font-weight: 700; color: var(--primary);">$2.4M</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600;">Chicago, IL</td>
+                    <td>98</td>
+                    <td>1,800</td>
+                    <td style="font-weight: 700;">$1.8M</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600;">Houston, TX</td>
+                    <td>84</td>
+                    <td>3,200</td>
+                    <td style="font-weight: 700;">$1.5M</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600;">Dallas, TX</td>
+                    <td>76</td>
+                    <td>2,100</td>
+                    <td style="font-weight: 700;">$1.2M</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600;">Miami, FL</td>
+                    <td>62</td>
+                    <td>1,500</td>
+                    <td style="font-weight: 700;">$950k</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600;">Las Vegas, NV</td>
+                    <td>48</td>
+                    <td>4,500</td>
+                    <td style="font-weight: 700;">$820k</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600;">Atlanta, GA</td>
+                    <td>34</td>
+                    <td>1,200</td>
+                    <td style="font-weight: 700;">$540k</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Printing KPIs -->
+        <div class="card">
+            <div class="card-header">Fulfillment & Printing <span
+                    style="font-size: 13px; font-weight: 500; color: var(--primary);">Physical Tickets</span></div>
+
+            <div class="metric-group"
+                style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px;">
+                    <div>
+                        <span class="label" style="margin:0;">Total Tickets Printed (MTD)</span>
+                        <div class="val" style="font-size: 28px;">45,200</div>
+                    </div>
+                    <span class="trend-down">↓ 3% Shift to Digital</span>
+                </div>
+
+                <span class="label" style="font-size: 11px;">Fulfillment Type</span>
+                <div class="mini-chart-bar" style="height: 16px;">
+                    <div class="mini-chart-segment" style="width: 75%; background: var(--primary);"
+                        title="Mailed (75%)">Mailed 75%</div>
+                    <div class="mini-chart-segment" style="width: 25%; background: #64748b;" title="Will Call (25%)">
+                        Will Call 25%</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <span class="label" style="display: flex; justify-content: space-between;">Printing Volume by State
+                    <span style="color: var(--primary);">Top 5</span></span>
+                <div class="flex-row"><span class="row-label">1. California (CA)</span><span class="row-val">18,500
+                        <span style="font-size: 12px; font-weight: normal; color: var(--text-sec);">(41%)</span></span>
+                </div>
+                <div class="flex-row"><span class="row-label">2. Texas (TX)</span><span class="row-val">12,400 <span
+                            style="font-size: 12px; font-weight: normal; color: var(--text-sec);">(27%)</span></span>
+                </div>
+                <div class="flex-row"><span class="row-label">3. Illinois (IL)</span><span class="row-val">8,100 <span
+                            style="font-size: 12px; font-weight: normal; color: var(--text-sec);">(18%)</span></span>
+                </div>
+                <div class="flex-row"><span class="row-label">4. Nevada (NV)</span><span class="row-val">3,200 <span
+                            style="font-size: 12px; font-weight: normal; color: var(--text-sec);">(7%)</span></span>
+                </div>
+                <div class="flex-row"><span class="row-label">5. Florida (FL)</span><span class="row-val">1,500 <span
+                            style="font-size: 12px; font-weight: normal; color: var(--text-sec);">(3%)</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5: Consumer Data Insights & Analytics -->
+    <h2 class="section-title">Consumer Data Insights & Analytics</h2>
+    <div class="grid-3">
+        <!-- Loyalty & LTV -->
+        <div class="card">
+            <div class="card-header">Customer Loyalty & Value <span
+                    style="font-size: 13px; font-weight: 500; color: var(--primary);">Platform Wide</span></div>
+
+            <div class="metric-group">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
+                    <div>
+                        <span class="label" style="margin:0;">Average Lifetime Value (LTV)</span>
+                        <div class="val" style="font-size: 24px;">$345.50</div>
+                    </div>
+                    <span class="trend-up">↑ 12% YoY</span>
+                </div>
+            </div>
+
+            <div class="metric-group">
+                <span class="label">Customer Retention</span>
+                <div class="flex-row"><span class="row-label">Returning Purchasers</span><span class="row-val"
+                        style="color: var(--primary);">58%</span></div>
+                <div class="flex-row"><span class="row-label">First-Time Buyers</span><span class="row-val">42%</span>
+                </div>
+                <div class="flex-row"><span class="row-label">Annual Churn Rate</span><span class="row-val"
+                        style="color: var(--success);">14.2% <span
+                            style="font-size: 12px; font-weight: normal;">(Healthy)</span></span></div>
+            </div>
+
+            <div class="metric-group" style="background: #f1f5f9; padding: 12px; border-radius: 8px;">
+                <span class="label" style="color: var(--text);">Average Transaction Frequency</span>
+                <div style="font-weight: 700; font-size: 16px;">2.4 Purchases / Year</div>
+            </div>
+        </div>
+
+        <!-- Top Spending Categories -->
+        <div class="card">
+            <div class="card-header">Consumer Behavior Patterns <span
+                    style="font-size: 13px; font-weight: 500; color: var(--primary);">Purchasing</span></div>
+
+            <div class="metric-group">
+                <span class="label">Highest LTV by Event Type</span>
+                <div class="flex-row" style="padding-top: 0;"><span class="row-label">1. Festivals
+                        (Multi-Day)</span><span class="row-val">$520</span></div>
+                <div class="flex-row"><span class="row-label">2. Sports (Season Pass)</span><span
+                        class="row-val">$410</span></div>
+                <div class="flex-row"><span class="row-label">3. Premium Concerts</span><span
+                        class="row-val">$380</span></div>
+                <div class="flex-row"><span class="row-label">4. Regional Latin</span><span class="row-val">$290</span>
+                </div>
+            </div>
+
+            <div class="metric-group">
+                <span class="label">Add-On Purchasing (Upsells)</span>
+                <div class="flex-row"><span class="row-label">Parking Passes</span><span class="row-val">22% Attach
+                        Rate</span></div>
+                <div class="flex-row"><span class="row-label">Ticket Insurance</span><span class="row-val"
+                        style="color: var(--primary);">18% Attach Rate</span></div>
+                <div class="flex-row"><span class="row-label">VIP / Fast Pass</span><span class="row-val">8% Attach
+                        Rate</span></div>
+            </div>
+        </div>
+
+        <!-- Geographic Analytics -->
+        <div class="card">
+            <div class="card-header">Top Consumer Zip Codes <span
+                    style="font-size: 13px; font-weight: 500; color: var(--primary);">By Revenue Volume</span></div>
+
+            <div class="metric-group">
+                <div class="flex-row" style="padding-top: 0;">
+                    <span class="row-label" style="font-weight: 600; color: var(--text);">Zip Code</span>
+                    <span class="row-val">Revenue (YTD)</span>
+                </div>
+                <div class="flex-row"><span class="row-label">90022 (East Los Angeles)</span><span class="row-val"
+                        style="color: var(--primary);">$1.2M</span></div>
+                <div class="flex-row"><span class="row-label">77011 (Houston, TX)</span><span
+                        class="row-val">$950K</span></div>
+                <div class="flex-row"><span class="row-label">60623 (Chicago, IL)</span><span
+                        class="row-val">$820K</span></div>
+                <div class="flex-row"><span class="row-label">90280 (South Gate, CA)</span><span
+                        class="row-val">$740K</span></div>
+                <div class="flex-row"><span class="row-label">75211 (Dallas, TX)</span><span
+                        class="row-val">$610K</span></div>
+            </div>
+
+            <div class="metric-group"
+                style="background: rgba(16, 185, 129, 0.1); padding: 16px; border-radius: 8px; border: 1px dashed rgba(16, 185, 129, 0.4);">
+                <span class="label" style="color: var(--success);">Emerging Hotspot</span>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; font-size: 15px; color: var(--text);">Phoenix, AZ (85009)</span>
+                    <span class="trend-up">+45% YoY</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
