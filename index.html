@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticketón Executive Dashboard - Full KPI Preview</title>
     <style>
         :root {
@@ -39,6 +40,12 @@
             line-height: 1.5;
         }
 
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+        }
+
         .header {
             margin-bottom: 30px;
             display: flex;
@@ -72,6 +79,30 @@
             font-weight: 500;
         }
 
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
+                gap: 16px;
+                border-radius: 10px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .header-logo {
+                gap: 10px;
+            }
+            .header-logo svg {
+                width: 140px;
+                height: 30px;
+            }
+            .header-logo > div {
+                margin-left: 0 !important;
+                padding-left: 12px !important;
+            }
+        }
+
         .section-title {
             font-size: 20px;
             font-weight: 700;
@@ -79,6 +110,13 @@
             display: inline-block;
             position: relative;
             color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 17px;
+                margin: 28px 0 16px 0;
+            }
         }
 
         .section-title::after {
@@ -119,6 +157,30 @@
             }
         }
 
+        @media (max-width: 768px) {
+            .grid-kpi {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 24px;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            .grid-sections {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-kpi {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .card {
             background: var(--surface);
             padding: 24px;
@@ -129,6 +191,13 @@
             flex-direction: column;
             justify-content: space-between;
             position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 16px;
+                border-radius: 10px;
+            }
         }
 
         .card.highlight {
@@ -163,6 +232,12 @@
             margin: 0 0 8px 0;
             color: var(--text);
             letter-spacing: -0.02em;
+        }
+
+        @media (max-width: 768px) {
+            .val {
+                font-size: 22px;
+            }
         }
 
         .trend-up {
@@ -253,6 +328,21 @@
             font-size: 14px;
         }
 
+        @media (max-width: 768px) {
+            .table th,
+            .table td {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .table {
+                min-width: 480px;
+            }
+        }
+
         .table th {
             color: var(--text-sec);
             font-size: 12px;
@@ -332,6 +422,44 @@
             color: white;
             font-size: 11px;
             font-weight: 700;
+        }
+
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Touch-friendly tap targets */
+        @media (max-width: 768px) {
+            .flex-row {
+                padding: 14px 0;
+            }
+            .trend-up,
+            .trend-down,
+            .trend-neutral {
+                font-size: 12px;
+                padding: 3px 7px;
+            }
+            .label {
+                font-size: 11px;
+            }
+            .row-label,
+            .row-val {
+                font-size: 13px;
+            }
+            .card-header {
+                font-size: 14px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
         }
     </style>
 </head>
@@ -513,7 +641,7 @@
 
         <div style="display: flex; flex-direction: column; gap: 24px;">
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="grid-2-col">
                 <div class="card" style="padding: 20px;">
                     <span class="label">Merchant Fees Collected</span>
                     <h2 class="val" style="font-size: 24px;">$425,000</h2>
